@@ -1,0 +1,15 @@
+name = "dataorientedhouse/lemonsignal"
+version = "1.10.0"
+description = "A pure Luau signal implementation faster than most other implementations in Roblox. Modified for pesde and RGF."
+authors = ["Aspecky", "Sona"]
+repository = "https://github.com/Data-Oriented-House/LemonSignal/"
+license = "MIT"
+includes = ["src/**/*.luau", "LICENSE", "pesde.toml", "README.md"]
+
+[target]
+environment = "luau"
+lib = "src/LemonSignal.lua"
+
+[indices]
+default = "https://github.com/RGFQQ/pesde-index"
+pesde = "https://github.com/pesde-pkg/index"

@@ -246,6 +246,20 @@ function Signal.wrap<T...>(signal: RBXScriptSignal): Signal<T...>
 	end)
 	return wrapper
 end
+function Signal.initthreads(num: number?)
+	if task then
+		for i = 1, num or 1 do
+			local thread = task.spawn(yielder)
+			table.insert(freeThreads, thread)
+		end
+	else
+		for i = 1, num or 1 do
+			local thread = coroutine.create(yielder)
+			coroutine.resume(thread)
+			table.insert(freeThreads, thread)
+		end
+	end
+end
 
 --\\ Methods
 Signal.Connect = connect
@@ -255,4 +269,4 @@ Signal.Fire = fire
 Signal.DisconnectAll = disconnectAll
 Signal.Destroy = destroy
 
-return { new = Signal.new, wrap = Signal.wrap }
+return { new = Signal.new, wrap = Signal.wrap, initthreads = Signal.initthreads }
