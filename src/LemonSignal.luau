@@ -10,8 +10,6 @@ export type Connection<U...> = {
 }
 
 export type Signal<T...> = {
-	RBXScriptConnection: RBXScriptConnection?,
-
 	Connect: <U...>(self: Signal<T...>, fn: (...any) -> (), U...) -> Connection<U...>,
 	Once: <U...>(self: Signal<T...>, fn: (...any) -> (), U...) -> Connection<U...>,
 	Wait: (self: Signal<T...>) -> T...,
@@ -83,14 +81,6 @@ local Signal = {}
 Signal.__index = Signal
 
 -- stylua: ignore
-local rbxConnect, rbxDisconnect do
-	if task then
-		local bindable = Instance.new("BindableEvent")
-		rbxConnect = bindable.Event.Connect
-		rbxDisconnect = bindable.Event:Connect(function() end).Disconnect
-		bindable:Destroy()
-	end
-end
 
 local function connect<T..., U...>(self: Signal<T...>, fn: (...any) -> (), ...: U...): Connection<U...>
 	local head = self._head
@@ -239,13 +229,6 @@ function Signal.new<T...>(): Signal<T...>
 	return setmetatable({ _head = false }, Signal)
 end
 
-function Signal.wrap<T...>(signal: RBXScriptSignal): Signal<T...>
-	local wrapper = setmetatable({ _head = false }, Signal)
-	wrapper.RBXScriptConnection = rbxConnect(signal, function(...)
-		fire(wrapper, ...)
-	end)
-	return wrapper
-end
 function Signal.initthreads(num: number?)
 	if task then
 		for i = 1, num or 1 do
@@ -269,4 +252,4 @@ Signal.Fire = fire
 Signal.DisconnectAll = disconnectAll
 Signal.Destroy = destroy
 
-return { new = Signal.new, wrap = Signal.wrap, initthreads = Signal.initthreads }
+return { new = Signal.new, initthreads = Signal.initthreads }
