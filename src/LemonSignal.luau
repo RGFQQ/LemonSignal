@@ -82,7 +82,7 @@ Signal.__index = Signal
 
 -- stylua: ignore
 
-local function connect<T..., U...>(self: Signal<T...>, fn: (...any) -> (), ...: U...): Connection<U...>
+local function connect(self: Signal<T...>, fn: (...any) -> (), ...: U...): Connection<U...>
 	local head = self._head
 	local cn = setmetatable({
 		Connected = true,
@@ -101,7 +101,7 @@ local function connect<T..., U...>(self: Signal<T...>, fn: (...any) -> (), ...: 
 	return cn
 end
 
-local function once<T..., U...>(self: Signal<T...>, fn: (...any) -> (), ...: U...)
+local function once(self: Signal<T...>, fn: (...any) -> (), ...: U...)
 	local cn
 	cn = connect(self, function(...)
 		disconnect(cn)
@@ -217,11 +217,6 @@ end
 
 local function destroy<T...>(self: Signal<T...>)
 	disconnectAll(self)
-	local cn = self.RBXScriptConnection
-	if cn then
-		rbxDisconnect(cn)
-		self.RBXScriptConnection = nil
-	end
 end
 
 --\\ Constructors
